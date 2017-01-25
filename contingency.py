@@ -180,12 +180,12 @@ class ContTable:
                 a = cond_prob.group(1)
                 b = cond_prob.group(2)
                 if a in self.xlabels:
-                    return marital_status.cont_table.loc[a, b]/marital_status.cont_table.loc[:, b].sum()
+                    return self.cont_table.loc[a, b]/self.cont_table.loc[:, b].sum()
                 else:
-                    return marital_status.cont_table.loc[b, a]/marital_status.cont_table.loc[:, a].sum()
+                    return self.cont_table.loc[b, a]/self.cont_table.loc[:, a].sum()
             else:
                 prob_chars = valid.group(1)
                 if prob_chars in self.xlabels:
-                    return marital_status.cont_table.loc[prob_chars, :].sum()/self.num_tot
+                    return self.cont_table.loc[prob_chars, :].sum()/self.num_tot
                 else:
-                    return marital_status.cont_table.loc[:, prob_chars].sum()/self.num_tot
+                    return self.cont_table.loc[:, prob_chars].sum()/self.num_tot
