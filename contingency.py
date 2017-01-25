@@ -1,9 +1,9 @@
 from IPython.display import display
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2
+from scipy.stats import chi2, norm
 from re import search
-from math import exp, sqrt, floor
+from math import exp, sqrt, floor, log
 
 class ContTable:
     def __init__(self, de, nde, dne, ndne, verbose=1, xlabs=["D", "~D"], ylabs=["E", "~E"]):
@@ -63,9 +63,8 @@ class ContTable:
     def odds_ratio(self, CI=.95, verbose=1):
         #OR = [P(D|E)/P(~D|E)]/[P(D|~E)/P(~D|~E)] = (ad)/(bc)
         self.OR = (self.de*self.ndne)/(self.nde*self.dne);
-        self.logOR = np.log(self.OR)
-        alpha = 1 - CI
-        z = alpha/2
+        self.logOR = log(self.OR)
+        z = norm.interval(CI)[0]
         logORVar = (1/self.a) + (1/self.b) + (1/self.c) + (1/self.d)
         #Upper bound
         upper = exp(self.logOR + z * sqrt(logORVar))
@@ -75,6 +74,7 @@ class ContTable:
             print("Odds Ratio (OR):", self.OR)
             if CI:
                 print("=> {:d}% CI using logOR: {:f}".format(floor(CI*100), self.logOR)) 
+                print("=> => logOR Var:", logORVar)
                 print("=> => Upper Bound:", upper)
                 print("=> => Lower Bound:", lower)
         if verbose > 1:
@@ -87,6 +87,35 @@ class ContTable:
             print("")
         assert self.OR >= 0, "Odds Ratio must be non-negative!"
         #Odds Ratio has no upper bound, unlike Relative Risk
+        return self.OR, self.logOR, (lower, upper)
+    def ss_odds_ratio(self, CI=.95, verbose=1):
+        self.ss_OR = (self.a*self.d)/((self.b + 1)*(self.c + 1))
+        a = self.a + .5
+        b = self.b + .5
+        c = self.c + .5
+        d = self.d + .5
+        self.ss_logOR = log((a*d)/(b*c))
+        z = norm.interval(CI)[0]
+        ss_logORVar = (1/a) + (1/b) + (1/c) + (1/d)
+        #Upper bound
+        upper = exp(self.ss_logOR + z * sqrt(ss_logORVar))
+        #Lower bound
+        lower = exp(self.ss_logOR - z * sqrt(ss_logORVar))
+        if verbose:
+            print("Small Sample Odds Ratio (ss_OR):", self.ss_OR)
+            if CI:
+                print("=> {:d}% CI using ss_logOR: {:f}".format(floor(CI*100), self.ss_logOR))
+                print("=> => ss_logOR Var:", ss_logORVar)
+                print("=> => Upper Bound:", upper)
+                print("=> => Lower Bound:", lower)
+        if verbose > 1:
+            if self.OR == 1:
+                print("=> Small Sample Odds Ratio (OR) indicates independence between D & E.")
+            elif self.OR > 1:
+                print("=> Small Sample Odds Ratio (OR) indicates a positive relationship between D & E.")
+            else:
+                print("=> Small Sample Odds Ratio (OR) indicates a negative relationship between D & E.")
+            print("")
         return self.OR, self.logOR, (lower, upper)
     def excess_risk(self, verbose=1):
         #Basis for additive risk
