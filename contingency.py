@@ -189,3 +189,31 @@ class ContTable:
                     return self.cont_table.loc[prob_chars, :].sum()/self.num_tot
                 else:
                     return self.cont_table.loc[:, prob_chars].sum()/self.num_tot
+                
+    def mantel_haenszel_correction(self, tables, CI=.95, verbose=1):
+        print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in tables])
+        weights = [i.b*i.c/i.num_tot for i in tables]
+        adj_OR = sum([i.a*i.d/i.num_tot for i in tables])/sum(weights)
+        adj_logOR = log(adj_OR)
+        print("Mantel-Haenszel adj. OR:", adj_OR)
+
+        first_num = sum([((i.a + i.d)/i.num_tot)*((i.a*i.d)/i.num_tot) for i in tables])
+        first_denom = 2*sum([((i.a*i.d)/i.num_tot) for i in tables])**2
+        second_num = sum([((i.a + i.d)/i.num_tot)*((i.b*i.c)/i.num_tot) + ((i.b + i.c)/i.num_tot)*((i.a*i.d)/i.num_tot) for i in tables])
+        second_denom = 2*sum([((i.a*i.d)/i.num_tot) for i in tables])*sum([((i.b*i.c)/i.num_tot) for i in tables])
+        third_num = sum([((i.b + i.c)/i.num_tot)*((i.b*i.c)/i.num_tot) for i in tables])
+        third_denom = 2*sum([((i.b*i.c)/i.num_tot) for i in tables])**2
+        adj_logORVar = (first_num/first_denom) + (second_num/second_denom) + (third_num/third_denom);
+
+        z = norm.interval(CI)[0]
+        upper = exp(adj_logOR + z * sqrt(adj_logORVar))
+        #Lower bound
+        lower = exp(adj_logOR - z * sqrt(adj_logORVar))
+        if verbose:
+            print("Odds Ratio (OR):", adj_OR)
+            if CI:
+                print("=> {:d}% CI using logOR: {:f}".format(floor(CI*100), adj_logOR)) 
+                print("=> => logOR Var:", adj_logORVar)
+                print("=> => Upper Bound:", upper)
+                print("=> => Lower Bound:", lower)
+        return adj_OR
