@@ -64,7 +64,7 @@ class ContTable:
         #OR = [P(D|E)/P(~D|E)]/[P(D|~E)/P(~D|~E)] = (ad)/(bc)
         self.OR = (self.de*self.ndne)/(self.nde*self.dne);
         self.logOR = log(self.OR)
-        z = norm.interval(CI)[0]
+        z = -norm.interval(CI)[0]
         logORVar = (1/self.a) + (1/self.b) + (1/self.c) + (1/self.d)
         #Upper bound
         upper = exp(self.logOR + z * sqrt(logORVar))
@@ -95,7 +95,7 @@ class ContTable:
         c = self.c + .5
         d = self.d + .5
         self.ss_logOR = log((a*d)/(b*c))
-        z = norm.interval(CI)[0]
+        z = -norm.interval(CI)[0]
         ss_logORVar = (1/a) + (1/b) + (1/c) + (1/d)
         #Upper bound
         upper = exp(self.ss_logOR + z * sqrt(ss_logORVar))
@@ -189,31 +189,53 @@ class ContTable:
                     return self.cont_table.loc[prob_chars, :].sum()/self.num_tot
                 else:
                     return self.cont_table.loc[:, prob_chars].sum()/self.num_tot
-                
-    def mantel_haenszel_correction(self, tables, CI=.95, verbose=1):
-        print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in tables])
-        weights = [i.b*i.c/i.num_tot for i in tables]
-        adj_OR = sum([i.a*i.d/i.num_tot for i in tables])/sum(weights)
-        adj_logOR = log(adj_OR)
-        print("Mantel-Haenszel adj. OR:", adj_OR)
-
-        first_num = sum([((i.a + i.d)/i.num_tot)*((i.a*i.d)/i.num_tot) for i in tables])
-        first_denom = 2*sum([((i.a*i.d)/i.num_tot) for i in tables])**2
-        second_num = sum([((i.a + i.d)/i.num_tot)*((i.b*i.c)/i.num_tot) + ((i.b + i.c)/i.num_tot)*((i.a*i.d)/i.num_tot) for i in tables])
-        second_denom = 2*sum([((i.a*i.d)/i.num_tot) for i in tables])*sum([((i.b*i.c)/i.num_tot) for i in tables])
-        third_num = sum([((i.b + i.c)/i.num_tot)*((i.b*i.c)/i.num_tot) for i in tables])
-        third_denom = 2*sum([((i.b*i.c)/i.num_tot) for i in tables])**2
-        adj_logORVar = (first_num/first_denom) + (second_num/second_denom) + (third_num/third_denom);
-
-        z = norm.interval(CI)[0]
+class Strata:
+    def __init__(self, tables):
+        self.tables = tables;
+    def woolf_correction(self, CI=.95, verbose=1):
+        print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in self.tables])
+        weights = [1/((1/(i.a+.5)) + (1/(i.b+.5)) + (1/(i.c+.5)) + (1/(i.d+.5)))  for i in self.tables]
+        adj_logOR = sum([w*i.ss_odds_ratio(verbose=0)[1] for i, w in zip(self.tables, weights)])/sum(weights)
+        adj_OR = exp(adj_logOR)
+        adj_logORVar = 1/sum(weights)
+        z = -norm.interval(CI)[0]
         upper = exp(adj_logOR + z * sqrt(adj_logORVar))
         #Lower bound
         lower = exp(adj_logOR - z * sqrt(adj_logORVar))
+        if verbose > 1:
+            print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in tables])
         if verbose:
-            print("Odds Ratio (OR):", adj_OR)
+            print("Woolf adj. OR:", adj_OR)
             if CI:
                 print("=> {:d}% CI using logOR: {:f}".format(floor(CI*100), adj_logOR)) 
                 print("=> => logOR Var:", adj_logORVar)
                 print("=> => Upper Bound:", upper)
                 print("=> => Lower Bound:", lower)
-        return adj_OR
+        return adj_OR, adj_logOR, (lower, upper)     
+    def mantel_haenszel_correction(self, CI=.95, verbose=1):
+        weights = [i.b*i.c/i.num_tot for i in self.tables]
+        adj_OR = sum([i.a*i.d/i.num_tot for i in self.tables])/sum(weights)
+        adj_logOR = log(adj_OR)
+
+        first_num = sum([((i.a + i.d)/i.num_tot)*((i.a*i.d)/i.num_tot) for i in self.tables])
+        first_denom = 2*sum([((i.a*i.d)/i.num_tot) for i in self.tables])**2
+        second_num = sum([((i.a + i.d)/i.num_tot)*((i.b*i.c)/i.num_tot) + ((i.b + i.c)/i.num_tot)*((i.a*i.d)/i.num_tot) for i in self.tables])
+        second_denom = 2*sum([((i.a*i.d)/i.num_tot) for i in self.tables])*sum([((i.b*i.c)/i.num_tot) for i in self.tables])
+        third_num = sum([((i.b + i.c)/i.num_tot)*((i.b*i.c)/i.num_tot) for i in self.tables])
+        third_denom = 2*sum([((i.b*i.c)/i.num_tot) for i in self.tables])**2
+        adj_logORVar = (first_num/first_denom) + (second_num/second_denom) + (third_num/third_denom);
+
+        z = -norm.interval(CI)[0]
+        upper = exp(adj_logOR + z * sqrt(adj_logORVar))
+        #Lower bound
+        lower = exp(adj_logOR - z * sqrt(adj_logORVar))
+        if verbose > 1:
+            print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in self.tables])
+        if verbose:
+            print("Mantel-Haenszel adj. OR:", adj_OR)
+            if CI:
+                print("=> {:d}% CI using logOR: {:f}".format(floor(CI*100), adj_logOR)) 
+                print("=> => logOR Var:", adj_logORVar)
+                print("=> => Upper Bound:", upper)
+                print("=> => Lower Bound:", lower)
+        return adj_OR, adj_logOR, (lower, upper)
