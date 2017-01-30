@@ -87,7 +87,7 @@ class ContTable:
             print("")
         assert self.OR >= 0, "Odds Ratio must be non-negative!"
         #Odds Ratio has no upper bound, unlike Relative Risk
-        return self.OR, self.logOR, (lower, upper)
+        return dict(OR=self.OR, logOR=self.logOR, bounds=(lower, upper))
     def ss_odds_ratio(self, CI=.95, verbose=1):
         self.ss_OR = (self.a*self.d)/((self.b + 1)*(self.c + 1))
         a = self.a + .5
@@ -116,7 +116,7 @@ class ContTable:
             else:
                 print("=> Small Sample Odds Ratio (OR) indicates a negative relationship between D & E.")
             print("")
-        return self.OR, self.logOR, (lower, upper)
+        return dict(OR=self.OR, logOR=self.logOR, bounds=(lower, upper))
     def excess_risk(self, verbose=1):
         #Basis for additive risk
         #ER = P(D|E) - P(D|~E) 
@@ -192,10 +192,15 @@ class ContTable:
 class Strata:
     def __init__(self, tables):
         self.tables = tables;
+    def pool_table(self):
+        a = sum([i.a for i in self.tables])
+        b = sum([i.b for i in self.tables])
+        c = sum([i.c for i in self.tables])
+        d = sum([i.d for i in self.tables])
+        return ContTable(a, b, c, d, 0)
     def woolf_correction(self, CI=.95, verbose=1):
-        print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in self.tables])
         weights = [1/((1/(i.a+.5)) + (1/(i.b+.5)) + (1/(i.c+.5)) + (1/(i.d+.5)))  for i in self.tables]
-        adj_logOR = sum([w*i.ss_odds_ratio(verbose=0)[1] for i, w in zip(self.tables, weights)])/sum(weights)
+        adj_logOR = sum([w*i.ss_odds_ratio(verbose=0)["logOR"] for i, w in zip(self.tables, weights)])/sum(weights)
         adj_OR = exp(adj_logOR)
         adj_logORVar = 1/sum(weights)
         z = -norm.interval(CI)[0]
@@ -203,7 +208,7 @@ class Strata:
         #Lower bound
         lower = exp(adj_logOR - z * sqrt(adj_logORVar))
         if verbose > 1:
-            print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in tables])
+            print("Individual ORs:", [i.odds_ratio(verbose=0)["OR"] for i in tables])
         if verbose:
             print("Woolf adj. OR:", adj_OR)
             if CI:
@@ -230,7 +235,7 @@ class Strata:
         #Lower bound
         lower = exp(adj_logOR - z * sqrt(adj_logORVar))
         if verbose > 1:
-            print("Individual ORs:", [i.odds_ratio(verbose=0)[0] for i in self.tables])
+            print("Individual ORs:", [i.odds_ratio(verbose=0)["OR"] for i in self.tables])
         if verbose:
             print("Mantel-Haenszel adj. OR:", adj_OR)
             if CI:
