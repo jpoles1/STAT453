@@ -198,6 +198,9 @@ class Strata:
         c = sum([i.c for i in self.tables])
         d = sum([i.d for i in self.tables])
         return ContTable(a, b, c, d, 0)
+    def cmh_test(self, verbose=1):
+        Ai = [(i.a + i.b)*(i.a + i.c)/i.num_tot for i in self.tables]
+        Vi = [(i.a + i.b)*(i.c + i.d)*(i.a + i.c)*(i.b + i.d)/(i.num_tot**2)/(i.num_tot-1) for i in self.tables]
     def woolf_correction(self, CI=.95, verbose=1):
         weights = [1/((1/(i.a+.5)) + (1/(i.b+.5)) + (1/(i.c+.5)) + (1/(i.d+.5)))  for i in self.tables]
         adj_logOR = sum([w*i.ss_odds_ratio(verbose=0)["logOR"] for i, w in zip(self.tables, weights)])/sum(weights)
