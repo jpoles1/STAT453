@@ -6,7 +6,7 @@ from contingency import *
 class Strata:
     def __init__(self, tables):
         self.tables = tables;
-    def pool_table(self):
+    def pool(self):
         a = sum([i.a for i in self.tables])
         b = sum([i.b for i in self.tables])
         c = sum([i.c for i in self.tables])
@@ -66,11 +66,13 @@ class Strata:
         if verbose:
             print("Cochran-Mantel-Haenszel Test:")
             print("=> test statistic =", test_statistic)
-            print("=> p-value =", pval)
+            print("=> p-value ≈", pval)
         if verbose > 1:
             if pval < alpha:
-                print("=> Cochran-Mantel-Haenszel Test contraindicates independence between D & E.")
+                #Reject null hypothesis
+                print("=> Cochran-Mantel-Haenszel Test suggests an association between D & E .")
             else:
-                print("=> Cochran-Mantel-Haenszel Test indicates independence between D & E.")
+                #Stick with null hypothesis
+                print("=> Cochran-Mantel-Haenszel Test indicates independence between D & E controling for stratified confounder.")
             print("")
         return pval

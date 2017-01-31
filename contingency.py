@@ -38,11 +38,7 @@ class ContTable:
         self.cont_table.index = self.xlabels
         if verbose:
             self.display()
-        self.relative_risk(verbose=verbose)
-        self.odds_ratio(verbose=verbose)
-        self.excess_risk(verbose=verbose)
-        self.attributable_risk(verbose=verbose)
-        self.chisq_indep(verbose=verbose)
+            self.summarize(verbose=verbose)
     def relative_risk(self, verbose=1):
         #Basis for multiplicative risk
         #RR = P(D|E)/P(D|~E)
@@ -165,10 +161,10 @@ class ContTable:
         if verbose:
             print("ChiSquared Independence Test (n=%i)"%self.num_tot)
             print("=> test statistic =", test_statistic)
-            print("=> p-value =", pval)
+            print("=> p-value ≈", pval)
         if verbose > 1:
             if pval < alpha:
-                print("=> ChiSquared Test contraindicates independence between D & E.")
+                print("=> ChiSquared Test suggests an association between D & E.")
             else:
                 print("=> ChiSquared Test indicates independence between D & E.")
             print("")
@@ -176,6 +172,12 @@ class ContTable:
     def display(self):
         print("2x2 Contingency Table:")
         display(self.cont_table)
+    def summarize(self, verbose=1):
+        self.relative_risk(verbose=verbose)
+        self.odds_ratio(verbose=verbose)
+        self.excess_risk(verbose=verbose)
+        self.attributable_risk(verbose=verbose)
+        self.chisq_indep(verbose=verbose)
     #Utility Function
     #Takes a string of form: "P(__)" where the blank may be filled with D, D|E, E|D, ~E, etc.
     #Eg: self.get_prob("P(~E|D)")
