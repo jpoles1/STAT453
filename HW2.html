@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>STAT 410 - HW4</title>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<style>
+#content{
+  padding: 20px;
+  width: 90%;
+  margin: auto;
+  border: 1px solid black;
+  text-align: center;
+}
+p{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+h1,h2,h3,h4,h5{
+text-align: left;
+}
+</style>
+</head>
+<body>
+<div id="content">
+<!--begin.rcode echo=FALSE, message=FALSE
+require(ggplot2)
+require(reshape2)
+end.rcode-->
+<h2>Homework 2 - STAT 453</h2>
+<h5><i>By: Jordan Poles</i></h5>
+
+<h3>Question 10.4</h3>
+
+<p>Based on the stratified data, what is the Odds Ratio, associated with biomass fuel
+exposure, for the never smokers stratum? What is the Odds Ratio for the past or present
+smokers stratum? Using the Mantel-Haenszel method, estimate the Odds Ratio associated
+with biomass fuel exposure after adjusting for smoking. Provide your assessment of the
+role of smoking as a confounding variable.</p>
+
+\[
+  OR = [P(D|E)/P(!D|E)]/[P(D|!E)/P(!D|!E)]
+  \\
+  {OR}_{NS} = [\frac{33}{33+17}/\frac{17}{33+17}]/[\frac{186}{186+411}/\frac{411}{186+411}]
+  = 4.289
+  \\
+  {OR}_{PS} = [\frac{17}{4+17}/\frac{4}{4+17}]/[\frac{52}{52+113}/\frac{113}{52+113}]
+  = 9.236
+\]
+
+<h3>Question 12.1</h3>
+For question with data, use R to perform logit regression, then write out results/conclusions.
+<h3>Question 13.1</h3>
+<h3>Question 13.2</h3>
+
+</div>
+</body>
+</html>
