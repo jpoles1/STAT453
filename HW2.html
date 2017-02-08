@@ -49,6 +49,23 @@ role of smoking as a confounding variable.</p>
   = 9.236
 \]
 
+<b><i>Mantel-Haenszel Correction</i></b>
+
+\[
+  n_{NS} = 33 + 17 + 186 + 411 = 647;
+  \;
+  n_{PS} = 17 + 4 + 52 + 113 = 186
+  \\
+  {OR}_{MHC} = \sum{\frac{a_i d_i}{n_i}}/\sum{\frac{b_i c_i}{n_i}}
+  = [\frac{33*411}{647} + \frac{17*113}{186}]/[\frac{17*186}{647} + \frac{4*52}{186}]
+  = 5.210
+\]
+
+<p>Using the Breslow-Day method, now examine the evidence for multiplicative
+interaction between smoking and indoor pollution. Given all your computations, which
+Odds Ratio would you report for the data of Table 10.10: (1) the pooled Odds Ratio, (2)
+the Odds Ratio, adjusting for smoking, or (3) the stratum-specific Odds Ratios?</p>
+
 <h3>Question 12.1</h3>
 For question with data, use R to perform logit regression, then write out results/conclusions.
 <h3>Question 13.1</h3>
