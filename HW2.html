@@ -39,13 +39,16 @@ smokers stratum? Using the Mantel-Haenszel method, estimate the Odds Ratio assoc
 with biomass fuel exposure after adjusting for smoking. Provide your assessment of the
 role of smoking as a confounding variable.</p>
 
+<b><i>Stratified Odds Ratios</i></b>
+
+Below we use the acroynm NS to represent non-smokers. We use PS to represent past/present smokers.
 \[
-  OR = [P(D|E)/P(!D|E)]/[P(D|!E)/P(!D|!E)]
+  OR = [P(D|E)/P(!D|E)]/[P(D|!E)/P(!D|!E)] = AD/BC
   \\
-  {OR}_{NS} = [\frac{33}{33+17}/\frac{17}{33+17}]/[\frac{186}{186+411}/\frac{411}{186+411}]
+  {OR}_{NS} = [\frac{33}{33+17}/\frac{17}{33+17}]/[\frac{186}{186+411}/\frac{411}{186+411}] = (33*411)/(17*186)
   = 4.289
   \\
-  {OR}_{PS} = [\frac{17}{4+17}/\frac{4}{4+17}]/[\frac{52}{52+113}/\frac{113}{52+113}]
+  {OR}_{PS} = [\frac{17}{4+17}/\frac{4}{4+17}]/[\frac{52}{52+113}/\frac{113}{52+113}] = (17*113)/(4*52)
   = 9.236
 \]
 
@@ -65,6 +68,17 @@ role of smoking as a confounding variable.</p>
 interaction between smoking and indoor pollution. Given all your computations, which
 Odds Ratio would you report for the data of Table 10.10: (1) the pooled Odds Ratio, (2)
 the Odds Ratio, adjusting for smoking, or (3) the stratum-specific Odds Ratios?</p>
+
+<b><i>Breslow-Day Method</i></b>
+
+\[
+  T = \sum{(a_i - A_i)*(\frac{1}{A_i} + \frac{1}{B_i} + \frac{1}{C_i} + \frac{1}{D_i})}
+  \\
+  \frac{AD}{BC} = {OR}_{MHC} = 5.210 = \frac{A(n_{!E}-n_{D}+A)}{(n_E-A)(n_D-A)}
+  \\
+  5.210 = \frac{A_0((186+411)-(33+186)+A_0)}{((33+17)-A_0)((33+186)-A_0)}
+\]
+http://www.wolframalpha.com/input/?i=5.210+%3D+%5Cfrac%7BA((186%2B411)-(33%2B186)%2BA)%7D%7B((33%2B17)-A)((33%2B186)-A)%7D
 
 <h3>Question 12.1</h3>
 For question with data, use R to perform logit regression, then write out results/conclusions.
