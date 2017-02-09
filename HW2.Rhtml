@@ -1,67 +1,5 @@
 <html>
 <head>
-<style type="text/css">
-.knitr .inline {
-  background-color: #f7f7f7;
-  border:solid 1px #B0B0B0;
-}
-.error {
-	font-weight: bold;
-	color: #FF0000;
-}
-.warning {
-	font-weight: bold;
-}
-.message {
-	font-style: italic;
-}
-.source, .output, .warning, .error, .message {
-	padding: 0 1em;
-  border:solid 1px #F7F7F7;
-}
-.source {
-  background-color: #f5f5f5;
-}
-.rimage .left {
-  text-align: left;
-}
-.rimage .right {
-  text-align: right;
-}
-.rimage .center {
-  text-align: center;
-}
-.hl.num {
-  color: #AF0F91;
-}
-.hl.str {
-  color: #317ECC;
-}
-.hl.com {
-  color: #AD95AF;
-  font-style: italic;
-}
-.hl.opt {
-  color: #000000;
-}
-.hl.std {
-  color: #585858;
-}
-.hl.kwa {
-  color: #295F94;
-  font-weight: bold;
-}
-.hl.kwb {
-  color: #B05A65;
-}
-.hl.kwc {
-  color: #55aa55;
-}
-.hl.kwd {
-  color: #BC5A65;
-  font-weight: bold;
-}
-</style>
 <title>STAT 410 - HW4</title>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
@@ -86,7 +24,10 @@ text-align: left;
 </head>
 <body>
 <div id="content">
-
+<!--begin.rcode echo=FALSE, message=FALSE
+require(ggplot2)
+require(reshape2)
+end.rcode-->
 <h2>Homework 2 - STAT 453</h2>
 <h5><i>By: Jordan Poles</i></h5>
 
@@ -127,7 +68,7 @@ interaction between smoking and indoor pollution. Given all your computations, w
 Odds Ratio would you report for the data of Table 10.10: (1) the pooled Odds Ratio, (2)
 the Odds Ratio, adjusting for smoking, or (3) the stratum-specific Odds Ratios?</p>
 
-<b><i>Breslow-Day Method</i></b>
+<b><i>Breslow-Day Test</i></b>
 
 \[
   T = \sum{(a_i - A_i)(\frac{1}{A_i} + \frac{1}{B_i} + \frac{1}{C_i} + \frac{1}{D_i})}
@@ -149,23 +90,24 @@ the Odds Ratio, adjusting for smoking, or (3) the stratum-specific Odds Ratios?<
   = (23503/56994) + (5212/4995) = 1.456
 \]
 
-<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl com">#Calculate p-value</span>
-  <span class="hl num">1</span><span class="hl opt">-</span><span class="hl kwd">pchisq</span><span class="hl std">(</span><span class="hl num">1.456</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">)</span>
-</pre></div>
-<div class="output"><pre class="knitr r">## [1] 0.2275676
-</pre></div>
-</div></div>
+<!--begin.rcode
+  #Calculate p-value
+  1-pchisq(1.456, 2-1)
+end.rcode-->
 
+<p>Given the results of the above test (p-value = .2276), we fail to reject the null hypothesis of the Breslow-Day test, which states that the strata share the same underlying Odds Ratio. Notably, our pooled Odds Ratio (5.242) closely approximates the adjusted Odds Ratio (5.210) calculated using the Mantel-Haenszel Correction. I would report these two values, as they confer valuable information regarding the underlying similarity between the strata.</p>
 
 <h3>Question 12.1</h3>
 
 In this question we have three mutually exclusive categories that we wish to represent using binary variables.
-We use two binary variables, one for M (\(X_1=1; X_2=0\)) and another for H (\(X_1=0; X_2=1\)). When neither of these variables equals one, the observation is in the L category.
+We use two binary variables, one for M (\(X_1=1; X_2=0\)) and another for H (\(X_1=0; X_2=1\)). When neither of these variables equals one, the observation is in the L category; they must not both be equal to one.
+
 \[
 
 \]
 
 <h3>Question 13.1</h3>
+
 <h3>Question 13.2</h3>
 For question with data, use R to perform logit regression, then write out results/conclusions.
 
