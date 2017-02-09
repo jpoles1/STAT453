@@ -72,18 +72,29 @@ the Odds Ratio, adjusting for smoking, or (3) the stratum-specific Odds Ratios?<
 <b><i>Breslow-Day Method</i></b>
 
 \[
-  T = \sum{(a_i - A_i)*(\frac{1}{A_i} + \frac{1}{B_i} + \frac{1}{C_i} + \frac{1}{D_i})}
+  T = \sum{(a_i - A_i)(\frac{1}{A_i} + \frac{1}{B_i} + \frac{1}{C_i} + \frac{1}{D_i})}
   \\
   \frac{AD}{BC} = {OR}_{MHC} = 5.210 = \frac{A(n_{!E}-n_{D}+A)}{(n_E-A)(n_D-A)}
   \\
   5.210 = \frac{A_0((186+411)-(33+186)+A_0)}{((33+17)-A_0)((33+186)-A_0)}
+  ;\;A_0 = 34.949 \approx 35
+  \\
+  5.210 = \frac{A_1((52+113)-(17+52)+A_1)}{((17+4)-A_1)((17+52)-A_1)}
+  ;\;A_1 = 15.053 \approx 15
 \]
-http://www.wolframalpha.com/input/?i=5.210+%3D+%5Cfrac%7BA((186%2B411)-(33%2B186)%2BA)%7D%7B((33%2B17)-A)((33%2B186)-A)%7D
 
 <h3>Question 12.1</h3>
-For question with data, use R to perform logit regression, then write out results/conclusions.
+
+In this question we have three mutually exclusive categories that we wish to represent using binary variables.
+We use two binary variables, one for M (\(X_1=1; X_2=0\)) and another for H (\(X_1=0; X_2=1\)). When neither of these variables equals one, the observation is in the L category.
+\[
+
+\]
+
 <h3>Question 13.1</h3>
 <h3>Question 13.2</h3>
+For question with data, use R to perform logit regression, then write out results/conclusions.
+
 
 </div>
 </body>
