@@ -99,6 +99,7 @@ with biomass fuel exposure after adjusting for smoking. Provide your assessment 
 role of smoking as a confounding variable.</p>
 
 <b><i>Stratified Odds Ratios</i></b>
+<br>
 
 Below we use the acroynm NS to represent non-smokers. We use PS to represent past/present smokers.
 \[
@@ -212,8 +213,7 @@ We use two binary variables, one for M (\(X_1=1; X_2=0\)) and another for H (\(X
 
 1) Examining the sex of passengers yields evidence that this is a fairly strong explanatory variable, with a exp(2.425-1.444) = 2.667x increase in odds of survival for women as compared to men. This likely reflects the policy that women were the first to evacuate the Titanic via lifeboat.
 
-<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl kwd">setwd</span><span class="hl std">(</span><span class="hl str">&quot;../&quot;</span><span class="hl std">)</span>
-  <span class="hl std">titanic</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;data/titanic.csv&quot;</span><span class="hl std">)</span>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl std">titanic</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;../data/titanic.csv&quot;</span><span class="hl std">)</span>
   <span class="hl com">#Sex</span>
   <span class="hl com">#Male - 0; Female - 1</span>
   <span class="hl kwd">glm</span><span class="hl std">(survived</span><span class="hl opt">~</span><span class="hl std">sex,</span><span class="hl kwc">family</span><span class="hl std">=binomial,</span><span class="hl kwc">data</span><span class="hl std">=titanic)</span>
