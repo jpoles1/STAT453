@@ -127,7 +127,7 @@ interaction between smoking and indoor pollution. Given all your computations, w
 Odds Ratio would you report for the data of Table 10.10: (1) the pooled Odds Ratio, (2)
 the Odds Ratio, adjusting for smoking, or (3) the stratum-specific Odds Ratios?</p>
 
-<b><i>Breslow-Day Method</i></b>
+<b><i>Breslow-Day Test</i></b>
 
 \[
   T = \sum{(a_i - A_i)(\frac{1}{A_i} + \frac{1}{B_i} + \frac{1}{C_i} + \frac{1}{D_i})}
@@ -150,24 +150,132 @@ the Odds Ratio, adjusting for smoking, or (3) the stratum-specific Odds Ratios?<
 \]
 
 <div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl com">#Calculate p-value</span>
-  <span class="hl num">1</span><span class="hl opt">-</span><span class="hl kwd">pchisq</span><span class="hl std">(</span><span class="hl num">1.456</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">)</span>
+  <span class="hl num">1</span><span class="hl opt">-</span><span class="hl kwd">pchisq</span><span class="hl std">(</span><span class="hl num">1.456</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl std">)</span>
 </pre></div>
 <div class="output"><pre class="knitr r">## [1] 0.2275676
 </pre></div>
 </div></div>
 
+<p>Given the results of the above test (p-value = .2276), we fail to reject the null hypothesis of the Breslow-Day test, which states that the strata share the same underlying Odds Ratio. Notably, our pooled Odds Ratio (5.242) closely approximates the adjusted Odds Ratio (5.210) calculated using the Mantel-Haenszel Correction. I would report these two values, as they confer valuable information regarding the underlying similarity between the strata.</p>
 
 <h3>Question 12.1</h3>
 
 In this question we have three mutually exclusive categories that we wish to represent using binary variables.
-We use two binary variables, one for M (\(X_1=1; X_2=0\)) and another for H (\(X_1=0; X_2=1\)). When neither of these variables equals one, the observation is in the L category.
+We use two binary variables, one for M (\(X_1=1; X_2=0\)) and another for H (\(X_1=0; X_2=1\)). When neither of these variables equals one, the observation is in the L category; they must not both be equal to one.
+
 \[
 
 \]
 
 <h3>Question 13.1</h3>
+
+
+<p>1) There are a total of four parameters in this model: an intercept and a linear combination of three observed variables.</p>
+<p>2) \(e^{a+cy+dz}\)</p>
+
+
 <h3>Question 13.2</h3>
-For question with data, use R to perform logit regression, then write out results/conclusions.
+
+1) Examining the sex of passengers yields evidence that this is a fairly strong explanatory variable, with a exp(2.425-1.444) = 2.667x increase in odds of survival for women as compared to men. This likely reflects the policy that women were the first to evacuate the Titanic via lifeboat.
+
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl std">titanic</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;data/titanic.csv&quot;</span><span class="hl std">)</span>
+  <span class="hl com">#Sex</span>
+  <span class="hl com">#Male - 0; Female - 1</span>
+  <span class="hl kwd">glm</span><span class="hl std">(survived</span><span class="hl opt">~</span><span class="hl std">sex,</span><span class="hl kwc">family</span><span class="hl std">=binomial,</span><span class="hl kwc">data</span><span class="hl std">=titanic)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Call:  glm(formula = survived ~ sex, family = binomial, data = titanic)
+## 
+## Coefficients:
+## (Intercept)          sex  
+##      -1.444        2.425  
+## 
+## Degrees of Freedom: 1308 Total (i.e. Null);  1307 Residual
+## Null Deviance:	    1741 
+## Residual Deviance: 1368 	AIC: 1372
+</pre></div>
+</div></div>
+
+2) Logistic regression on age yields a modest negative association of between age and odds of survival with a decrease of -0.007899 in log odds per year of age. This would suggest that older passengers were reasonbly more likely to perish.
+
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl com">#Age</span>
+  <span class="hl kwd">hist</span><span class="hl std">(titanic</span><span class="hl opt">$</span><span class="hl std">age,</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl str">&quot;Age Distribution&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r">  <span class="hl kwd">boxplot</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=titanic, age</span><span class="hl opt">~</span><span class="hl std">survived)</span>
+  <span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;Age vs Survival&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-4-2.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r">  <span class="hl kwd">glm</span><span class="hl std">(survived</span><span class="hl opt">~</span><span class="hl std">age,</span><span class="hl kwc">family</span><span class="hl std">=binomial,</span><span class="hl kwc">data</span><span class="hl std">=titanic)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Call:  glm(formula = survived ~ age, family = binomial, data = titanic)
+## 
+## Coefficients:
+## (Intercept)          age  
+##   -0.136531    -0.007899  
+## 
+## Degrees of Freedom: 1045 Total (i.e. Null);  1044 Residual
+##   (263 observations deleted due to missingness)
+## Null Deviance:	    1415 
+## Residual Deviance: 1411 	AIC: 1415
+</pre></div>
+</div></div>
+
+3) Logistic regression on location of embarkment yields fairly little in terms of explanatory value. It appears that embarkees at Chebourg may have had a slightly higher chance of survival, though this may be due to correlation with a secondary variable, like wealth (as estimated by ticket price).
+
+
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl com">#Place of embarkment</span>
+  <span class="hl com">#Q - Queenstown; C - Chebourg; S - Southampton</span>
+  <span class="hl kwd">glm</span><span class="hl std">(survived</span><span class="hl opt">~</span><span class="hl std">embarked,</span><span class="hl kwc">family</span><span class="hl std">=binomial,</span><span class="hl kwc">data</span><span class="hl std">=titanic)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Call:  glm(formula = survived ~ embarked, family = binomial, data = titanic)
+## 
+## Coefficients:
+## (Intercept)    embarkedC    embarkedQ    embarkedS  
+##   1.566e-14    7.380e-03   -8.824e-01   -5.834e-01  
+## 
+## Degrees of Freedom: 1308 Total (i.e. Null);  1305 Residual
+## Null Deviance:	    1741 
+## Residual Deviance: 1718 	AIC: 1726
+</pre></div>
+<div class="source"><pre class="knitr r">  <span class="hl kwd">boxplot</span><span class="hl std">(</span><span class="hl kwc">data</span><span class="hl std">=titanic, fare</span><span class="hl opt">~</span><span class="hl std">embarked)</span>
+  <span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;Fare vs Embark Location&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" class="plot" /></div></div>
+
+4) Logistic regression on passenger class can be performed in two different ways: by treating the variable as ordered or unordered. We begin with the ordered interpretation, which is useful should we believe that each successive passenger class has larger/smaller log odds than the previous one. The regression suggests that for each successive passenger class, there is a decrease of 0.779 in log odds of survival. Turning to the unordered logit regression, we see that our results are almost exactly the same. This suggests that ordered interpretation of this variable is effective for use in our model; this is also reflected in the AIC (as the ordered interpretation is more parsimonious).
+
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl com">#Ticket Class - Continuous</span>
+  <span class="hl kwd">glm</span><span class="hl std">(survived</span><span class="hl opt">~</span><span class="hl std">pclass,</span><span class="hl kwc">family</span><span class="hl std">=binomial,</span><span class="hl kwc">data</span><span class="hl std">=titanic)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Call:  glm(formula = survived ~ pclass, family = binomial, data = titanic)
+## 
+## Coefficients:
+## (Intercept)       pclass  
+##       1.268       -0.779  
+## 
+## Degrees of Freedom: 1308 Total (i.e. Null);  1307 Residual
+## Null Deviance:	    1741 
+## Residual Deviance: 1613 	AIC: 1617
+</pre></div>
+<div class="source"><pre class="knitr r">  <span class="hl com">#Ticket Class - Categorical</span>
+  <span class="hl kwd">glm</span><span class="hl std">(survived</span><span class="hl opt">~</span><span class="hl kwd">factor</span><span class="hl std">(pclass),</span><span class="hl kwc">family</span><span class="hl std">=binomial,</span><span class="hl kwc">data</span><span class="hl std">=titanic)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Call:  glm(formula = survived ~ factor(pclass), family = binomial, data = titanic)
+## 
+## Coefficients:
+##     (Intercept)  factor(pclass)2  factor(pclass)3  
+##          0.4861          -0.7696          -1.5567  
+## 
+## Degrees of Freedom: 1308 Total (i.e. Null);  1306 Residual
+## Null Deviance:	    1741 
+## Residual Deviance: 1613 	AIC: 1619
+</pre></div>
+</div></div>
 
 
 </div>
