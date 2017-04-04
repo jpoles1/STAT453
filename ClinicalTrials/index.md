@@ -11,8 +11,6 @@ $$
 
 ####Updating Estimates
 
-
-
 ##Clinical Trials
 
 - A clinical trial is a prospective study evaluating the effect of interventions on humans under pre-specified conditions.
@@ -55,3 +53,23 @@ _Primary prevention trials = preventing a disease using a long term treatment (n
 - Question should be defined prospectively and specifically
 - Primary response variable should be assessable in all patients, and unbiased/objective
 - Participation typically occurs when primary response var occurs
+
+###Design of Phase I trials
+
+####3+3 Design
+
+- This is a special case of the BOIN Design
+- Not highly generalizable, and not a very rational algorithm
+- Relies on having batches of 3 patients
+
+####Accelerated Titration Design
+
+- Treat 1 patient at lowest level, escalate with each patient until toxicity
+- After toxicity, switch back to 3+3 Design
+
+####Continual Reassessment Method (CRM)
+
+- Simple model-based design
+- pr(toxicity at a dose $d_j$) = $\pi_j$  = $p_j^{exp(a)}$ where alpha is an unknown parameter and $0 < p_1 < p_2 < p_j < 1$ are our prior guesses of toxicity probabilities
+- Based on observations we update the dose toxicity curve
+- 
