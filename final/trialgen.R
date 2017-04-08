@@ -1,13 +1,14 @@
 require(BOIN)
 require(ggplot2)
 require(gridExtra)
+require(plot3D)
 require(plotly)
 f1 = function(i){(i["x"]+i["y"])}
 f2 = function(i){(i["x"]+i["y"]**2)}
 f3 = function(i){((i["x"]-3)**2-i["y"])}
 #f4 = function(i){((i["x"])**2+.1*i["y"])}
 f4 = function(i){((i["x"]+3)**4*(i["y"]+3)**4)}
-f5 = function(i){((i["x"]-3)**2+(i["y"]-3)**2)}
+f5 = function(i){((i["x"]-3)**2+(i["y"]-1)**2)}
 plot_sim = function(fn, name="fn", output=0){
   side = seq(1,4,.1)
   #side = c(1:4)
@@ -19,7 +20,8 @@ plot_sim = function(fn, name="fn", output=0){
   z = scale(z, center = min(z), scale = max(z)-min(z))
   ds = cbind(xy, z)
   z = matrix(z, ncol=length(side), byrow=TRUE)
-  p = plot_ly(z=~z) %>% add_surface() %>% layout(title=paste('Plot of', name))
+  #p = plot_ly(z=~z) %>% add_surface() %>% layout(title=paste('Plot of', name))
+  p = persp(side, side, z, xlab="Gemcitabine Lvl", ylab="MK-8776 Lvl", main = paste('Plot of', name))
   #p = ggplot(data=ds, aes(x=x, y=y, z=z))+geom_contour()
   if(output){print(p)}
   return(ds)
