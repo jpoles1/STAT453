@@ -131,7 +131,7 @@ get.oc.comb(.3, scenario_sim(f3, maxtox, xside, yside, 0), 42, 3, n.earlystop=42
 ```
 In this scenario, we have no values which lie exactly on the desired DLT, but a couple which lie quite close (particularly 3,3 & 4,3). These points are selected for quite well (22.7+32.8=55.5%), though I find it rather odd that the value with a true toxicity rate of 0.32 is selected at a higher rate. Notably, this is a situation in which the existing metric (particularly selection percentage of MTD) does not capture the strength/fit of our algorithm in this case. 
 
---
+---
 
 4) In this scenario, we return to the toxicity structure created for our second scenario, but this time also introduce a randomized element, in order to demonstrate this feature (stochasticity) of my approach.
 
@@ -183,6 +183,8 @@ yside=c(20, 40, 80, 100, 120)
 maxtox=.4
 ```
 
+---
+
 1) Here the BOIN waterfall algorithm perfomance is fine for selecting appropriate dosages from our first scenario. We see that the most appropriate dosage likely lies at (3,2 or 2,4), and that the former dosage has the highest selection percentage in its row (though not by much). For the second case, however, the algorithm picks a slightly lower dosage toxicity (.22) over a closer dosage (.26) 7.5% of the time.
 ```{r, cache=TRUE}
 get.oc.comb(.25, scenario_sim(f1, maxtox, xside, yside, 1), ncohort=c(27,15,15), cohortsize=3, n.earlystop=15, startdose=c(1, 1), ntrial=1000, MTD.contour=TRUE)
@@ -196,15 +198,20 @@ get.oc.comb(.25, scenario_sim(f2, maxtox, xside, yside, 1), ncohort=c(27,15,15),
 ```
 
 ---
+
 3) Here we do not have any values lie close to our DLT, a result of our generating function. In testing this case, we show that the algorithm does its best to pick dosages which best bracket our desired DLT. 
 ```{r, cache=TRUE}
 get.oc.comb(.25, scenario_sim(f3, maxtox, xside, yside, 1), ncohort=c(27,15,15), cohortsize=3, n.earlystop=15, startdose=c(1, 1), ntrial=1000, MTD.contour=TRUE)
 ```
 
+---
+
 4) In the following scenario we have incorporated stochasticity, and I have inspected a number of different randomized trial scenarios. In the majority, there are reasonable dosages which exhibit an appropriate toxicity (though some did not). In all but two -- where the randomization introduced somewhat unlikely drops in toxicity at high dosages -- the algorithm selected the expected dosages with a fairly high level of accuracy.
 ```{r, cache=TRUE}
 get.oc.comb(.25, scenario_sim(f4, .3, xside, yside, 1), ncohort=c(27,15,15), cohortsize=3, n.earlystop=15, startdose=c(1, 1), ntrial=1000, MTD.contour=TRUE)
 ```
+
+---
 
 5) In our final scenario, we have an entire row of dosages which lie at or near our DLT of 0.25, but only one intermediate dosage which lies exactly at this value (2,3). The algorithm does not select this dosage at a high rate, because it encounters a high toxicity rate in the highest dosage tier of Gemcitabine, and thus does not waterfall down to higher dosages of MK-8776, staying around (2,1).
 ```{r, cache=TRUE}

@@ -27,14 +27,76 @@ q = plot_sim(example_bivariate, 1, "Example Bivariate Equation", 1)
 What Tools Did I Use?
 ========================================================
 
-- Created a set of functions in R which make it simple to compose a toxicity scenario using any bivariate equation (the results of which are automatically scaled from 0-1)
+- Created a set of functions in R which make it simple to compose a toxicity scenario using any bivariate equation (the results of which are automatically scaled from 0-1).
 - Receive back both a plot of the toxicity scenario in 3D as well as a set of data points in both matrix and plot form.
 - Levels for each of the two drugs in question may be set, such that functions can take an numeric array of ordered dosage levels (1-4) or quanitities (20mg, 40mg, 80mg); these values are input into the equation as fractions of the largest value.
 - Experimenter can introduce stochasticity by incorporation of a random variable into the generative formula, as we show later.
 
-Single MTD - Trial 1
+Single MTD - Scenario 2 of 5
 ========================================================
 
+Linear relationship with Gemcitabine.
+<br>Quadratic growth with MK-8776 level. 
+<br>Maxmimum toxicity when both drugs are at maximum.
+
+```{r}
+xside=c(400, 600, 800, 1000)
+yside = c(20,40,80,112) 
+maxtox=.6
+f2
+```
+
+========================================================
+<center>
+```{r, echo=FALSE}
+ds = plot_sim(f2, maxtox, "f2", output=1)
+```
+</center>
+
+========================================================
+
+<center>
+```{r, echo=FALSE}
+q = scenario_sim(f2, maxtox, xside, yside, 1)
+```
+</center>
+
+Single MTD - Scenario 2 of 5
+========================================================
+
+```{r, cache=TRUE}
+get.oc.comb(.3, scenario_sim(f2, maxtox, xside, yside, 0), 42, 3, n.earlystop=42, startdose=c(1, 1), ntrial=1000, MTD.contour=FALSE)
+```
+
+Single MTD - Scenario 2 of 5
+========================================================
+- This toxicity scenario has two possible MTDs, at the extremes of each of the two drug concentrations (1,4 & 4,1). 
+- There are some true toxicity values which lie close to, but above, the desired DLT
+- These dosages (2,4 & 3,3) were selected at a much greater frequency (17.3+24.4=41.7%) as compared to the desired MTDs (10.1+6.7=16.7%). This is indicative of somewhat poor performance.
+
+Single MTD - Scenario 4 of 5
+========================================================
+Linear relationship with Gemcitabine.
+<br>Quadratic growth with MK-8776 level. 
+<br>Maxmimum toxicity when both drugs are at maximum.
+<br>Now we have introduced stochasticity!
+
+```{r}
+f4
+```
+
+========================================================
+<center>
+```{r, echo=FALSE}
+q=scenario_sim(f4, .45, xside, yside, 1)
+```
+</center>
+
+Single MTD - Scenario 4 of 5
+========================================================
+```{r, cache=TRUE}
+get.oc.comb(.3, scenario_sim(f4, .45, xside, yside, 0), 42, 3, n.earlystop=42, startdose=c(1, 1), ntrial=1000, MTD.contour=FALSE)
+```
 
 Single MTD - Trial 1
 ========================================================
@@ -62,6 +124,37 @@ In my second trial, the search proceeded normally, and produced a more complete 
 <br><br>
 The algorithm was also able to find a reasonable choice for the MTD in this scenario. Thus it performed significantly stronger in this case as compared to the first trial.
 </p>
+
+Waterfall MTD - Scenario 5 of 5
+========================================================
+
+```{r}
+xside=c(600, 800, 1000)
+yside=c(20, 40, 80, 100, 120)
+maxtox=.4
+f5
+```
+
+========================================================
+<center>
+```{r, echo=FALSE}
+ds = plot_sim(f5, maxtox, "f5", output=1)
+```
+</center>
+
+========================================================
+
+<center>
+```{r, echo=FALSE}
+q = scenario_sim(f5, maxtox, xside, yside, 1)
+```
+</center>
+
+
+Waterfall MTD - Scenario 5 of 5
+========================================================
+
+![Waterfall MTD - Trial 1](img/f5waterfall.png)
 
 
 Waterfall MTD - Trial 1
