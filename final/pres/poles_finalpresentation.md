@@ -261,3 +261,10 @@ In this trial, the early-stopping mechanism of the design kicked-in. The remaind
 <br><br>
 Nonetheless, the chosen MTD values are not unreasonable, though they may not permit maximum efficacy.
 </p>
+
+Ideas for Improvements
+========================================================
+- Return the results of get.oc.comb() as an R list containing a series of named matrices and values, in addition to providing the option to print out the results. 
+- Saveable data entered into the matrices in tab #2 of the BOIN GUI. 
+- Alternatively, allow easy import of form of structured data (csv, for example) into these matrices. 
+- Allow export of the operating characteristics to csv.
