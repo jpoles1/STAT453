@@ -10,7 +10,7 @@ output: html_document
 
 ###Part 1
 
-Here, I simulate the operating characteristics of a BOIN trial design given 5 different meaningful toxicity scenarios of my own design. I decided to take a slightly novel approach, and use procedural generation to describe several different toxicity scenarios using simple bivariate equations. 
+Here, I simulate the operating characteristics of a BOIN trial design given 5 different meaningful toxicity scenarios of my own design. I decided to take a slightly novel approach, and use procedural generation to describe several different toxicity scenarios using simple bivariate equations. This allows both greater creative freedom as well as repeatability.
 
 I've created a set of functions in R which make it simple to compose a toxicity scenario using any bivariate equation (the results of which are automatically scaled from 0-1), and receive back both a plot of the toxicity scenario in 3D as well as a set of data points (a toxicity level for each level of treatment) which may be input directly into the BOIN R/GUI software in order to discretely simulate the scenario with a given set of drug concentrations. Additionally, the levels for each of the two drugs in question may be set, such that functions can take an numeric array of ordered dosage levels (1-4) or quanitities (20mg, 40mg, 80mg); these values are input into the equation as fractions of the largest value. If the experimenter wished to introduce some stochasticity at this stage, we suggest the incorporation of a random variable into the generative formula, as we show in one of our scenarios.
 
@@ -87,7 +87,7 @@ ggplot(data=outcomes, aes(x=x,y=y,z=z, colour=..level..))+geom_contour()+facet_w
 
 ---
 
-I find that the interpreting the goodness of the MTD Operating Characteristics for a given scenario was rather cumbersome, given the available metrics. Thus I propose a novel metric, which can be maximized in order to optimize performance among a given family of single MTD scenarios. I propose summing the selection percentage divided by the the distance between desired DLT and true dosage toxicity to the 4th power (though this parameter can be adjusted to suit the situation, and the desired diminuition of score as distance increases). 
+I find that the interpreting the goodness of the MTD Operating Characteristics for a given scenario was rather cumbersome, given the available metrics. Thus I propose a novel metric, which can be maximized in order to optimize performance among a given family of single MTD scenarios. I propose summing the selection percentage divided by the the distance between desired DLT and true dosage toxicity to the 4th power (though this parameter can be adjusted to suit the situation, and the desired diminuition of score as distance increases). I would have liked to apply this function to my scenarios, but I was unable to get the function to return a selection percentage matrix.
 
 $$
   \sum\sum{\frac{SelPct}{({DLT}_{Desired} - {TrueTox}_{i,j})^4}}
